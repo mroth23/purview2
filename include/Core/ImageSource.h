@@ -8,7 +8,7 @@ namespace purview {
 
     public:
         void init(char *argv);
-        Image loadImage(char *path);
+        Image loadImage(std::string Path);
     };
 
 };

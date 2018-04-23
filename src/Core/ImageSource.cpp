@@ -20,7 +20,7 @@ void ImageSource::init(char *argv) {
   This will load the image using ImageMagick, and then convert it to our
   internal representation.
 */
-Image ImageSource::loadImage(char *Path) {
+Image ImageSource::loadImage(std::string Path) {
     Magick::Image MagickImage;
     MagickImage.read(Path);
 

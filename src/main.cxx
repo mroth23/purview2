@@ -43,8 +43,10 @@ int main(int argc, char *argv[]) {
     if (varmap.count("file")) {
         ImageSource ImgSource;
         ImgSource.init(*argv);
-        Image Img = ImgSource.loadImage("images/pic1.jpg");
-        cout << Img.getRowCount() << "~" << Img.getColCount() << endl;
+
+        string Path = varmap["file"].as<string>();
+        Image Img = ImgSource.loadImage(Path);
+        cout << "Loaded Image (" << Path << "): " << Img.getColCount() << "x" << Img.getRowCount() << endl;
     }
 
     return EXIT_SUCCESS;

@@ -1,6 +1,6 @@
 ## Set compiler flags to turn off optimization and enable coverage
-SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -ftest-coverage")
-SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -ftest-coverage")
+SET(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -g -O0 -ftest-coverage -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16")
+SET(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} -g -O0 -ftest-coverage -DMAGICKCORE_HDRI_ENABLE=0 -DMAGICKCORE_QUANTUM_DEPTH=16")
 
 ## Build Test Executables
 SET(PROJECT_LIBS ${Boost_LIBRARIES} ${ImageMagick_LIBRARIES})

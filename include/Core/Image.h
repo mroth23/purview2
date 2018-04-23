@@ -4,16 +4,18 @@
 #include <vector>
 
 struct Pixel {
-    unsigned char R,G,B;
+    float R,G,B;
 };
+
+typedef std::vector<Pixel>::size_type size_type;
 
 namespace purview {
     class Image {
         std::vector<Pixel> Data;
-        unsigned Cols;
+        size_type Cols;
 
     public:
-        Image(int Rows, int Cols)
+        Image(size_type Rows, size_type Cols)
         : Data(Rows * Cols)
         , Cols(Cols)
         {}
@@ -21,14 +23,14 @@ namespace purview {
         auto begin() { return Data.begin(); }
         auto end() { return Data.end(); }
 
-        struct IndexType { unsigned Row; unsigned Col; };
+        struct IndexType { size_type Row; size_type Col; };
 
         Pixel &operator[](const IndexType I) {
             return Data[I.Row * Cols + I.Col];
         }
 
-        unsigned getRowCount() const { return Data.size()/Cols; }
-        unsigned getColCount() const { return Cols; }
+        size_type getRowCount() const { return Data.size()/Cols; }
+        size_type getColCount() const { return Cols; }
     };
 };
 
