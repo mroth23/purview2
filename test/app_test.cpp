@@ -1,12 +1,12 @@
-#include <string.h>
 #include "gtest/gtest.h"
+#include <string.h>
 
 #include "../src/app.h"
 #include "../src/appinfo.h"
 
 /* to use a test fixture, we derive from testing::Test */
 class AppTest : public testing::Test {
- protected:
+protected:
   /* will be called before each test is run */
   virtual void SetUp() { app = new App(); }
 

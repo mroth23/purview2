@@ -1,5 +1,5 @@
-#include "Core/Image.h"
 #include "Core/ImageSource.h"
+#include "Core/Image.h"
 #include <Magick++.h>
 
 #include <exception>
@@ -11,9 +11,7 @@ using namespace purview;
   Initialise the ImageSource.
   This is just a wrapper around the ImageMagick++ init.
 */
-void ImageSource::init(char *argv) {
-    Magick::InitializeMagick(argv);
-}
+void ImageSource::init(char *argv) { Magick::InitializeMagick(argv); }
 
 /*
   Load an image from the given path.
@@ -21,25 +19,25 @@ void ImageSource::init(char *argv) {
   internal representation.
 */
 Image ImageSource::loadImage(std::string Path) {
-    Magick::Image MagickImage;
-    MagickImage.read(Path);
+  Magick::Image MagickImage;
+  MagickImage.read(Path);
 
-    const auto RowCount = MagickImage.baseRows();
-    const auto ColCount = MagickImage.baseColumns();
+  const auto RowCount = MagickImage.baseRows();
+  const auto ColCount = MagickImage.baseColumns();
 
-    Image PurviewImage(RowCount, ColCount);
+  Image PurviewImage(RowCount, ColCount);
 
-    // Iterate over the pixels to convert them into our vector-based format.
-    for (unsigned Row = 0; Row < RowCount; Row++) {
-        for (unsigned Col = 0; Col < ColCount; Col++) {
-            Magick::ColorRGB PixelColor = MagickImage.pixelColor(Row, Col);
-            Pixel P;
-            P.R = (float)PixelColor.red();
-            P.G = (float)PixelColor.green();
-            P.B = (float)PixelColor.blue();
-            PurviewImage[{ Row, Col }] = P;
-        }
+  // Iterate over the pixels to convert them into our vector-based format.
+  for (unsigned Row = 0; Row < RowCount; Row++) {
+    for (unsigned Col = 0; Col < ColCount; Col++) {
+      Magick::ColorRGB PixelColor = MagickImage.pixelColor(Row, Col);
+      Pixel P;
+      P.R = (float)PixelColor.red();
+      P.G = (float)PixelColor.green();
+      P.B = (float)PixelColor.blue();
+      PurviewImage[{Row, Col}] = P;
     }
+  }
 
-    return PurviewImage;
+  return PurviewImage;
 }

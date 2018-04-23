@@ -1,5 +1,5 @@
-#include <boost/config.hpp>
 #include "gtest/gtest.h"
+#include <boost/config.hpp>
 
 TEST(SanityCheck, CheckIntrinsics) {
   /* we hope that true is true */
