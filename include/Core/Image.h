@@ -11,6 +11,7 @@ typedef std::vector<Pixel>::size_type size_type;
 
 namespace purview {
 class Image {
+  protected:
     std::vector<Pixel> Data;
     size_type Height;
 
@@ -26,11 +27,14 @@ class Image {
         size_type Y;
     };
 
-    Pixel &operator[](const IndexType I) { return Data[I.X * Height + I.Y]; }
+    auto &operator[](const IndexType I) { return Data[I.X * Height + I.Y]; }
 
     size_type getWidth() const { return Data.size() / Height; }
     size_type getHeight() const { return Height; }
+
+    std::vector<std::vector<float>> toGreyscale();
 };
+
 }; // namespace purview
 
 #endif // _IMAGE_H_

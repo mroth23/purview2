@@ -33,6 +33,15 @@ class IdentityAnalyser : public Analyser {
     ~IdentityAnalyser(){};
 };
 
+class LuminanceGradientAnalyser : public Analyser {
+  public:
+    using Analyser::Analyser;
+    void init();
+    void runAnalysis();
+    void dispose();
+    ~LuminanceGradientAnalyser(){};
+};
+
 std::map<std::string, std::shared_ptr<Analyser>>
 getAnalysers(std::shared_ptr<Image> SourceImage);
 
