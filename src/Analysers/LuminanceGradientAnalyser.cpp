@@ -5,7 +5,6 @@
 using namespace purview;
 
 const float SobelX[3][3] = {{-1, 0, 1}, {-2, 0, 2}, {-1, 0, 1}};
-
 const float SobelY[3][3] = {{-1, -2, -1}, {0, 0, 0}, {1, 2, 1}};
 
 void LuminanceGradientAnalyser::init() {}

@@ -42,6 +42,15 @@ class LuminanceGradientAnalyser : public Analyser {
     ~LuminanceGradientAnalyser(){};
 };
 
+class CFAAnalyser : public Analyser {
+  public:
+    using Analyser::Analyser;
+    void init();
+    void runAnalysis();
+    void dispose();
+    ~CFAAnalyser(){};
+};
+
 std::map<std::string, std::shared_ptr<Analyser>>
 getAnalysers(std::shared_ptr<Image> SourceImage);
 

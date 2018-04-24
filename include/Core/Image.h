@@ -33,6 +33,7 @@ class Image {
     size_type getHeight() const { return Height; }
 
     std::vector<std::vector<float>> toGreyscale();
+    std::vector<std::vector<float>> greyMap(float, float, float);
 };
 
 }; // namespace purview
