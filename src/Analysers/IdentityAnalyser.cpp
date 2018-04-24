@@ -8,7 +8,7 @@ using namespace purview;
 void IdentityAnalyser::init() {}
 
 void IdentityAnalyser::runAnalysis() {
-  this->AnalysisResult = std::make_shared<ImageReport>(SourceImage);
+    this->AnalysisResult = std::make_shared<ImageReport>(SourceImage);
 }
 
 void IdentityAnalyser::dispose() {}

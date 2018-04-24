@@ -1,10 +1,10 @@
+#include "app.h"
 #include <boost/program_options.hpp>
 #include <cstdlib>
 #include <iostream>
-#include "app.h"
 
-#include "Core/ImageSource.h"
 #include "Core/Analyser.h"
+#include "Core/ImageSource.h"
 
 using namespace std;
 using namespace purview;
@@ -12,8 +12,7 @@ namespace po = boost::program_options;
 
 po::options_description getDescription() {
     po::options_description desc("Options");
-    desc.add_options()
-        ("help,h", "Display this message")
+    desc.add_options()("help,h", "Display this message")
         ("file,f", po::value<string>(), "Load image from file")
         ("version,v", "Display the version number");
 
@@ -47,7 +46,8 @@ int main(int argc, char *argv[]) {
 
         string Path = varmap["file"].as<string>();
         const auto Img = ImgSource.loadImage(Path);
-        cout << "Loaded Image (" << Path << "): " << Img->getWidth() << "x" << Img->getHeight() << endl;
+        cout << "Loaded Image (" << Path << "): " << Img->getWidth() << "x"
+             << Img->getHeight() << endl;
 
         auto Analysers = getAnalysers(Img);
 
@@ -62,7 +62,8 @@ int main(int argc, char *argv[]) {
             // FIXME: Figure out an interface or pattern to avoid casting.
             auto AnalysisResult = AnalyserInst->getAnalysisResult();
 
-            if (auto ImgReport = dynamic_pointer_cast<ImageReport>(AnalysisResult)) {
+            if (auto ImgReport =
+                dynamic_pointer_cast<ImageReport>(AnalysisResult)) {
                 ImgSource.saveImage("output.png", ImgReport->getResultImage());
             }
         }

@@ -20,5 +20,5 @@ int App::getProjectPatchVersion() const { return APPLICATION_VERSION_PATCH; }
 string App::getProjectVersion() const { return APPLICATION_VERSION_STRING; }
 
 string App::getProjectCopyrightYears() const {
-  return APPLICATION_COPYRIGHT_YEARS;
+    return APPLICATION_COPYRIGHT_YEARS;
 }
