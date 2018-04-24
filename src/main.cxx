@@ -4,6 +4,7 @@
 #include "app.h"
 
 #include "Core/ImageSource.h"
+#include "Core/Analyser.h"
 
 using namespace std;
 using namespace purview;
@@ -45,8 +46,17 @@ int main(int argc, char *argv[]) {
         ImgSource.init(*argv);
 
         string Path = varmap["file"].as<string>();
-        Image Img = ImgSource.loadImage(Path);
-        cout << "Loaded Image (" << Path << "): " << Img.getColCount() << "x" << Img.getRowCount() << endl;
+        auto Img = ImgSource.loadImage(Path);
+        cout << "Loaded Image (" << Path << "): " << Img->getColCount() << "x" << Img->getRowCount() << endl;
+
+        auto Analysers = getAnalysers(Img);
+
+        for (const auto &Analyser : Analysers) {
+            auto AnalyserInst = Analyser.second;
+            AnalyserInst->init();
+            AnalyserInst->runAnalysis();
+            auto AnalysisResult = AnalyserInst->getAnalysisResult();
+        }
     }
 
     return EXIT_SUCCESS;

@@ -18,14 +18,14 @@ void ImageSource::init(char *argv) { Magick::InitializeMagick(argv); }
   This will load the image using ImageMagick, and then convert it to our
   internal representation.
 */
-Image ImageSource::loadImage(std::string Path) {
+std::shared_ptr<Image> ImageSource::loadImage(std::string Path) {
   Magick::Image MagickImage;
   MagickImage.read(Path);
 
   const auto RowCount = MagickImage.baseRows();
   const auto ColCount = MagickImage.baseColumns();
 
-  Image PurviewImage(RowCount, ColCount);
+  auto PurviewImage = std::make_shared<Image>(RowCount, ColCount);
 
   // Iterate over the pixels to convert them into our vector-based format.
   for (unsigned Row = 0; Row < RowCount; Row++) {
@@ -35,9 +35,13 @@ Image ImageSource::loadImage(std::string Path) {
       P.R = (float)PixelColor.red();
       P.G = (float)PixelColor.green();
       P.B = (float)PixelColor.blue();
-      PurviewImage[{Row, Col}] = P;
+      (*PurviewImage)[{Row, Col}] = P;
     }
   }
 
   return PurviewImage;
+}
+
+void ImageSource::saveImage(std::string Path, Image Img) {
+    return;
 }
