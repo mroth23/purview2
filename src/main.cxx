@@ -47,15 +47,24 @@ int main(int argc, char *argv[]) {
 
         string Path = varmap["file"].as<string>();
         const auto Img = ImgSource.loadImage(Path);
-        cout << "Loaded Image (" << Path << "): " << Img->getColCount() << "x" << Img->getRowCount() << endl;
+        cout << "Loaded Image (" << Path << "): " << Img->getWidth() << "x" << Img->getHeight() << endl;
 
         auto Analysers = getAnalysers(Img);
 
         for (const auto &Analyser : Analysers) {
             auto AnalyserInst = Analyser.second;
+
+            // Run the analysis.
             AnalyserInst->init();
             AnalyserInst->runAnalysis();
+
+            // Get analysis result and downcast.
+            // FIXME: Figure out an interface or pattern to avoid casting.
             auto AnalysisResult = AnalyserInst->getAnalysisResult();
+
+            if (auto ImgReport = dynamic_pointer_cast<ImageReport>(AnalysisResult)) {
+                ImgSource.saveImage("output.png", ImgReport->getResultImage());
+            }
         }
     }
 
