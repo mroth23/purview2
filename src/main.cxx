@@ -46,7 +46,7 @@ int main(int argc, char *argv[]) {
         ImgSource.init(*argv);
 
         string Path = varmap["file"].as<string>();
-        auto Img = ImgSource.loadImage(Path);
+        const auto Img = ImgSource.loadImage(Path);
         cout << "Loaded Image (" << Path << "): " << Img->getColCount() << "x" << Img->getRowCount() << endl;
 
         auto Analysers = getAnalysers(Img);
