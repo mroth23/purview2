@@ -1,24 +1,27 @@
 #include "Core/Image.h"
+#include "Core/Matrix.h"
+#include <memory>
 
 using namespace purview;
 using namespace std;
 
-vector<vector<float>> Image::toGreyscale() {
+std::shared_ptr<Matrix> Image::toGreyscale() const {
     return greyMap(0.2126f, 0.7152f, 0.0722f);
 }
 
-vector<vector<float>> Image::greyMap(float CoeffR, float CoeffG, float CoeffB) {
-    const auto H = getHeight();
-    const auto W = getWidth();
+std::shared_ptr<Matrix> Image::greyMap(const float coeffR, const float coeffG, const float coeffB) const {
+    const auto w = getWidth();
+    const auto h = getHeight();
 
-    vector<vector<float>> Result(W, vector<float>(H, 0));
+    const auto result = std::make_shared<Matrix>(w, h);
 
-    for (unsigned X = 0; X < W; ++X) {
-        for (unsigned Y = 0; Y < H; ++Y) {
-            Pixel P = (*this)[{X, Y}];
-            Result[X][Y] = P.R * CoeffR + P.G * CoeffG + P.B * CoeffB;
+    for (unsigned x = 0; x < w; ++x) {
+        for (unsigned y = 0; y < h; ++y) {
+            Pixel p = getPixel(x, y);
+            float pixelValue = p.R * coeffR + p.G * coeffG + p.B * coeffB;
+            result->setValue(x, y, pixelValue);
         }
     }
 
-    return Result;
+    return result;
 }

@@ -1,7 +1,11 @@
 #include "app.h"
 #include <boost/program_options.hpp>
+#include <boost/exception/info.hpp>
 #include <cstdlib>
 #include <iostream>
+#include <stdexcept>
+
+#include <execinfo.h>
 
 #include "Core/Analyser.h"
 #include "Core/ImageSource.h"
@@ -10,62 +14,88 @@ using namespace std;
 using namespace purview;
 namespace po = boost::program_options;
 
-po::options_description getDescription() {
+po::options_description getDescription()
+{
     po::options_description desc("Options");
-    desc.add_options()("help,h", "Display this message")
-        ("file,f", po::value<string>(), "Load image from file")
-        ("version,v", "Display the version number");
+    desc.add_options()("help,h", "Display this message")("file,f", po::value<string>(), "Load image from file")("version,v", "Display the version number");
 
     return desc;
 }
 
-int main(int argc, char *argv[]) {
+void runAnalysis(Analyser& a)
+{
+    // Run the analysis.
+    a.init();
+    a.runAnalysis();
+
+    // Get analysis result and save.
+    const auto& analysisResult = a.getAnalysisResult();
+    // Get analysis result and downcast.
+    // FIXME: Figure out an interface or pattern to avoid casting.
+    analysisResult->save();
+}
+
+void handler()
+{
+    void* trace_elems[20];
+    int trace_elem_count(backtrace(trace_elems, 20));
+    char** stack_syms(backtrace_symbols(trace_elems, trace_elem_count));
+    for (int i = 0; i < trace_elem_count; ++i)
+    {
+        std::cout << stack_syms[i] << "\n";
+    }
+    free(stack_syms);
+
+    exit(1);
+}
+
+int main(int argc, char* argv[])
+{
+    std::set_terminate(handler);
+
     po::options_description desc = getDescription();
     po::variables_map varmap;
 
-    try {
+    try
+    {
         store(po::command_line_parser(argc, argv).options(desc).run(), varmap);
         notify(varmap);
-    } catch (po::error &error) {
+    }
+    catch (po::error& error)
+    {
         cerr << error.what() << endl;
         return EXIT_FAILURE;
     }
 
-    if (varmap.count("help")) {
+    if (varmap.count("help"))
+    {
         cout << desc << endl;
     }
 
-    if (varmap.count("version")) {
+    if (varmap.count("version"))
+    {
         App app;
         cout << app.getProjectVersion() << endl;
     }
 
-    if (varmap.count("file")) {
-        ImageSource ImgSource;
-        ImgSource.init(*argv);
+    if (varmap.count("file"))
+    {
+        try
+        {
+            ImageSource imgSource;
+            imgSource.init(*argv);
 
-        string Path = varmap["file"].as<string>();
-        const auto Img = ImgSource.loadImage(Path);
-        cout << "Loaded Image (" << Path << "): " << Img->getWidth() << "x"
-             << Img->getHeight() << endl;
+            string path = varmap["file"].as<string>();
+            const auto img = imgSource.loadImage(path);
+            cout << "Loaded Image (" << path << "): " << img->getWidth() << "x"
+                 << img->getHeight() << endl;
 
-        auto Analysers = getAnalysers(Img);
-
-        for (const auto &Analyser : Analysers) {
-            auto AnalyserInst = Analyser.second;
-
-            // Run the analysis.
-            AnalyserInst->init();
-            AnalyserInst->runAnalysis();
-
-            // Get analysis result and downcast.
-            // FIXME: Figure out an interface or pattern to avoid casting.
-            auto AnalysisResult = AnalyserInst->getAnalysisResult();
-
-            if (auto ImgReport =
-                dynamic_pointer_cast<ImageReport>(AnalysisResult)) {
-                ImgSource.saveImage("output.png", ImgReport->getResultImage());
-            }
+            LuminanceGradientAnalyser lga(img);
+            runAnalysis(lga);
+        }
+        catch (const std::exception& e)
+        {
+            cout << e.what();
         }
     }
 

@@ -4,6 +4,7 @@
 
 #include <exception>
 #include <iostream>
+#include <memory>
 
 using namespace purview;
 
@@ -11,51 +12,61 @@ using namespace purview;
   Initialise the ImageSource.
   This is just a wrapper around the ImageMagick++ init.
 */
-void ImageSource::init(char *argv) { Magick::InitializeMagick(argv); }
+void ImageSource::init(char* argv) { Magick::InitializeMagick(argv); }
 
 /*
   Load an image from the given path.
   This will load the image using ImageMagick, and then convert it to our
   internal representation.
 */
-std::shared_ptr<Image> ImageSource::loadImage(std::string Path) {
+const std::shared_ptr<Image> ImageSource::loadImage(std::string path)
+{
     Magick::Image MagickImage;
     MagickImage.read("./images/pic1.jpg");
-    MagickImage.read(Path);
+    MagickImage.read(path);
 
-    const auto Height = MagickImage.baseRows();
-    const auto Width = MagickImage.baseColumns();
+    const auto height = MagickImage.baseRows();
+    const auto width = MagickImage.baseColumns();
 
-    auto PurviewImage = std::make_shared<Image>(Width, Height);
+    const auto PurviewImage = std::make_shared<Image>(width, height);
 
     // Iterate over the pixels to convert them into our vector-based format.
-    for (unsigned X = 0; X < Width; ++X) {
-        for (unsigned Y = 0; Y < Height; ++Y) {
-            Magick::ColorRGB PixelColor = MagickImage.pixelColor(X, Y);
-            Pixel P;
-            P.R = (float)PixelColor.red();
-            P.G = (float)PixelColor.green();
-            P.B = (float)PixelColor.blue();
-            (*PurviewImage)[{X, Y}] = P;
+    for (unsigned x = 0; x < width; ++x)
+    {
+        for (unsigned y = 0; y < height; ++y)
+        {
+            Magick::ColorRGB PixelColor = MagickImage.pixelColor(x, y);
+            Pixel p;
+            p.R = (float)PixelColor.red();
+            p.G = (float)PixelColor.green();
+            p.B = (float)PixelColor.blue();
+            PurviewImage->setPixel(x, y, p);
         }
     }
 
     return PurviewImage;
 }
 
-void ImageSource::saveImage(std::string Path, std::shared_ptr<Image> Img) {
-    const auto Width = Img->getWidth();
-    const auto Height = Img->getHeight();
-    const auto Size = Magick::Geometry(Width, Height);
+void ImageSource::saveImage(std::string path, const Image& img)
+{
+    const auto width = img.getWidth();
+    const auto height = img.getHeight();
+    const auto size = Magick::Geometry(width, height);
 
-    Magick::Image MagickImage(Size, Magick::Color("white"));
+    std::cout << "Writing image " << width << "x" << height << std::endl;
 
-    for (unsigned X = 0; X < Width; ++X) {
-        for (unsigned Y = 0; Y < Height; ++Y) {
-            Pixel P = (*Img)[{X, Y}];
-            MagickImage.pixelColor(X, Y, Magick::ColorRGB(P.R, P.G, P.B));
+    Magick::Image MagickImage(size, Magick::Color("white"));
+
+    for (unsigned x = 0; x < width; ++x)
+    {
+        for (unsigned y = 0; y < height; ++y)
+        {
+            Pixel p = img.getPixel(x, y);
+            MagickImage.pixelColor(x, y, Magick::ColorRGB(p.R, p.G, p.B));
         }
     }
 
-    MagickImage.write(Path);
+    std::cout << "Saving file... ";
+
+    MagickImage.write(path);
 }

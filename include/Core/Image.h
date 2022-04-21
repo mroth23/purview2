@@ -1,39 +1,53 @@
 #ifndef _IMAGE_H_
 #define _IMAGE_H_
 
+#include "Core/Matrix.h"
+#include <memory>
 #include <vector>
 
-struct Pixel {
+struct Pixel
+{
     float R, G, B;
 };
 
 typedef std::vector<Pixel>::size_type size_type;
 
-namespace purview {
-class Image {
-  protected:
+namespace purview
+{
+class Image
+{
+protected:
     std::vector<Pixel> Data;
+    size_type Width;
     size_type Height;
 
-  public:
+public:
     Image(size_type Width, size_type Height)
-        : Data(Width * Height), Height(Height) {}
+        : Data(Width * Height)
+        , Width(Width)
+        , Height(Height)
+    {
+    }
 
-    auto begin() { return Data.begin(); }
-    auto end() { return Data.end(); }
+    auto begin() const { return Data.begin(); }
+    auto end() const { return Data.end(); }
 
-    struct IndexType {
+    struct IndexType
+    {
         size_type X;
         size_type Y;
     };
 
-    auto &operator[](const IndexType I) { return Data[I.X * Height + I.Y]; }
+    auto& operator[](const IndexType I) { return Data[I.X * Height + I.Y]; }
 
-    size_type getWidth() const { return Data.size() / Height; }
+    size_type getWidth() const { return Width; }
     size_type getHeight() const { return Height; }
 
-    std::vector<std::vector<float>> toGreyscale();
-    std::vector<std::vector<float>> greyMap(float, float, float);
+    Pixel getPixel(size_type X, size_type Y) const { return Data[X * Height + Y]; }
+    void setPixel(size_type X, size_type Y, Pixel P) { Data[X * Height + Y] = P; }
+
+    std::shared_ptr<Matrix> toGreyscale() const;
+    std::shared_ptr<Matrix> greyMap(const float, const float, const float) const;
 };
 
 }; // namespace purview

@@ -2,26 +2,44 @@
 #define _REPORT_H_
 
 #include "Core/Image.h"
+#include "Core/ImageSource.h"
 #include <memory>
+#include <string>
 
-namespace purview {
+namespace purview
+{
 
-class Report {
-  public:
-    static constexpr const char *ReportType = "Report";
-    virtual ~Report() {}
+class Report
+{
+public:
+    static constexpr const char* ReportType = "Report";
+    virtual ~Report() { }
+    virtual void save() = 0;
 };
 
-class ImageReport : public Report {
-  private:
+class ImageReport : public Report
+{
+private:
     std::shared_ptr<Image> ResultImage;
 
-  public:
+public:
     ImageReport(std::shared_ptr<Image> ResultImage)
-        : ResultImage(ResultImage) {}
-    static constexpr const char *ReportType = "Image Report";
-    std::shared_ptr<Image> getResultImage() { return ResultImage; }
-    ~ImageReport() {}
+        : ResultImage(ResultImage)
+    {
+    }
+
+    static constexpr const char* ReportType = "Image Report";
+
+    const Image& getResultImage() const { return *ResultImage; }
+
+    void save()
+    {
+        ImageSource imgSource;
+        imgSource.init({});
+        imgSource.saveImage("output.png", *ResultImage);
+    }
+
+    ~ImageReport() { }
 };
 } // namespace purview
 

@@ -8,8 +8,8 @@ class ImageSource {
 
   public:
     void init(char *argv);
-    std::shared_ptr<Image> loadImage(std::string Path);
-    void saveImage(std::string Path, std::shared_ptr<Image> Img);
+    const std::shared_ptr<Image> loadImage(std::string Path);
+    void saveImage(std::string Path, const Image &Img);
 };
 
 };     // namespace purview

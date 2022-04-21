@@ -16,8 +16,9 @@ class Analyser {
     std::shared_ptr<Report> AnalysisResult;
 
   public:
-    Analyser(std::shared_ptr<Image> SourceImage) : SourceImage(SourceImage) {}
+    Analyser(const std::shared_ptr<Image> SourceImage) : SourceImage(SourceImage) {}
     std::shared_ptr<Report> getAnalysisResult() { return AnalysisResult; }
+
     virtual void init() = 0;
     virtual void runAnalysis() = 0;
     virtual void dispose() = 0;
@@ -50,9 +51,6 @@ class CFAAnalyser : public Analyser {
     void dispose();
     ~CFAAnalyser(){};
 };
-
-std::map<std::string, std::shared_ptr<Analyser>>
-getAnalysers(std::shared_ptr<Image> SourceImage);
 
 } // namespace purview
 

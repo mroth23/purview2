@@ -1,10 +1,18 @@
 #ifndef _ALGORITHMS_H_
 #define _ALGORITHMS_H_
 
+#include "Core/Image.h"
 #include <vector>
 
-namespace purview {
-    std::vector<std::vector<float>> convolve(std::vector<const float[][]>, std::vector<std::vector<float>>, unsigned long, unsigned long);
+namespace purview
+{
+
+Image& convolve(
+    std::vector<Matrix>&,
+    Image&,
+    unsigned long,
+    unsigned long);
+
 }
 
 #endif // _ALGORITHMS_H_

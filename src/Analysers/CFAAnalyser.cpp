@@ -10,10 +10,9 @@ void CFAAnalyser::init() {}
 void CFAAnalyser::runAnalysis() {
     const auto Width = SourceImage->getWidth();
     const auto Height = SourceImage->getHeight();
-    auto ResultImage = std::make_shared<Image>(Width, Height);
+    Image ResultImage(Width, Height);
 
-    auto GreenChannel = SourceImage->greyMap(0f, 255f, 0f);
-
+    // auto GreenChannel = SourceImage->greyMap(0.0, 255.0, 0.0);
 }
 
 void CFAAnalyser::dispose() {}
